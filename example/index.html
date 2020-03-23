@@ -23,7 +23,7 @@
             var signedRequest = rm.getSignedRequest({
                 success: function({ signedRequest, platform }) {
                     document.getElementById("sr").innerHTML = "Signed Request: </br>" + signedRequest;
-                    document.getElementById("platform").innerHTML = "Platform: </br>" + platform;
+                    document.getElementById("platform").innerHTML = "Platform: </br>" + rm.getPlatform();
                 }
             });
 

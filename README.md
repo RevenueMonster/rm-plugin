@@ -21,6 +21,7 @@ rm.getSignedRequest({
 
 // show toast message
 rm.showToast({
+    type: 'success', // success, error (only for web portal)
     title: 'hello'
 })
 
@@ -43,7 +44,7 @@ rm.showLoading();
 // hide loading
 rm.hideLoading();
 
-// show alert
+// show alert (only for terminal and merchant-app)
 rm.showAlert({
     type: 'success', // success, error
     title: 'hello world'

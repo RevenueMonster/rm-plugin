@@ -1,4 +1,5 @@
 var portalPostMessage;
+var platform = '';
 
 var PLATFORM_MOBILE_APP = 'MOBILE_APP';
 var PLATFORM_TERMINAL = 'TERMINAL';
@@ -6,8 +7,10 @@ var PLATFORM_WEB_PORTAL = 'WEB_PORTAL';
 
 // sdk code
 var rm = {
-  platform: '',
   getSignedRequest: onPrepareSignedRequest,
+  getPlatform: function() {
+    return platform;
+  },
   scanCode: onScanCode,
   showToast: onShowToast,
   showLoading: function() {
@@ -31,16 +34,16 @@ async function onPrepareSignedRequest({ success, fail }) {
 
   if ('revenuemonster' in window) {
     await sleep(100);
-    rm.platform = window.revenuemonster.platform;
+    platform = window.revenuemonster.platform;
     signedRequest = window.revenuemonster.getSignedRequest();
-    success({ signedRequest, platform: rm.platform })
+    success({ signedRequest, platform: platform })
   } else if ('signedRequest' in window) {
     await sleep(100);
-    rm.platform = PLATFORM_TERMINAL;
+    platform = PLATFORM_TERMINAL;
     signedRequest = window.signedRequest.getSignedRequest();
-    success({ signedRequest, platform: rm.platform })
+    success({ signedRequest, platform: platform })
   } else {
-    rm.platform = PLATFORM_WEB_PORTAL;
+    platform = PLATFORM_WEB_PORTAL;
     window.addEventListener('message', function (event) {
       portalPostMessage = function (msg) {
         event.source.postMessage(JSON.stringify(msg), event.origin);
@@ -48,7 +51,7 @@ async function onPrepareSignedRequest({ success, fail }) {
       portalPostMessage({
         action: 'FINISH_HANDSHAKE',
       })
-      success({ signedRequest: event.data, platform: rm.platform })
+      success({ signedRequest: event.data, platform: platform })
     }, false);
   }
 
@@ -56,7 +59,7 @@ async function onPrepareSignedRequest({ success, fail }) {
 }
 
 function onScanCode({ success, fail, complete }) {
-  switch (rm.platform) {
+  switch (platform) {
     case PLATFORM_MOBILE_APP:
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
@@ -86,7 +89,7 @@ function onScanCode({ success, fail, complete }) {
 }
 
 function onToggleLoader(isLoading) {
-  switch (rm.platform) {
+  switch (platform) {
     case PLATFORM_MOBILE_APP:
       var funcName = 'hide';
       if (isLoading) {
@@ -115,7 +118,7 @@ function onToggleLoader(isLoading) {
 }
 
 function onShowToast({ title, type }) {
-  switch (rm.platform) {
+  switch (platform) {
     case PLATFORM_MOBILE_APP:
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
@@ -139,7 +142,7 @@ function onShowToast({ title, type }) {
 }
 
 function onShowAlert({ title = '', type = 'success' }) {
-  switch (rm.platform) {
+  switch (platform) {
     case PLATFORM_MOBILE_APP:
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
@@ -157,7 +160,7 @@ function onShowAlert({ title = '', type = 'success' }) {
 }
 
 async function onPrintReceipt({ data }) {
-  switch (rm.platform) {
+  switch (platform) {
     case PLATFORM_TERMINAL:
       const messageStr = JSON.stringify(data);
       await window.Native.printReceipt(messageStr);
