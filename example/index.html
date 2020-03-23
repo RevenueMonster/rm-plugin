@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RM Plugins</title>
+</head>
+<body>
+    <div>
+        <div id="sr"></div></br>
+        <div id="platform"></div></br>
+        <button onclick="onScanQRCode()">Open Scanner (Terminal or Mobile App)</button></br></br>
+        <button onclick="onShowToast()">Show Toast</button></br></br>
+        <button onclick="onLoading()">Toggle Loading</button></br></br>
+        <button onclick="onShowAlert('hi success')">Show Success Alert (Terminal or Mobile App)</button></br></br>
+        <button onclick="onShowAlert('hi error', 'error')">Show Error Alert (Terminal or Mobile App)</button></br></br>
+    </div>
+    <script type="module">
+        import rm from '../index.js';
+        window.rm = rm;
+
+        function demo() {
+            var signedRequest = rm.getSignedRequest({
+                success: function({ signedRequest, platform }) {
+                    document.getElementById("sr").innerHTML = "Signed Request: </br>" + signedRequest;
+                    document.getElementById("platform").innerHTML = "Platform: </br>" + platform;
+                }
+            });
+
+            setTimeout(function() {
+                rm.hideLoading();
+            }, 1000);
+        }
+
+        demo();
+    </script>
+    <script>
+        function onScanQRCode() {
+            rm.scanCode(
+                {
+                    success: function(resp) {
+                        alert('resp: ' + resp.code);
+                        console.log('success: ', resp.code)
+                    },
+                    fail: function() {
+                        console.log('failed')
+                    },
+                    complete: function() {
+                        console.log('complete')
+                    }
+                }
+            )
+        }
+
+        function onShowToast() {
+            rm.showToast(
+                {
+                    title: 'hello',
+                    type: 'success'
+                }
+            )
+        }
+
+        function onLoading() {
+            rm.showLoading();
+
+            setTimeout(function() {
+                rm.hideLoading();
+            }, 2000)
+        }
+
+        function onShowAlert(title, type = 'success') {
+            rm.showAlert(
+                {
+                    type: type,
+                    title: title
+                }
+            )
+        }
+    </script>
+</body>
+
+</html>

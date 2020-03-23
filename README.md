@@ -12,15 +12,19 @@ $ npm install rm-plugin
 ```js
 import rm from 'rm-plugin';
 
-// Get signed request
-var signedRequest = await rm.getSignedRequest();
+// get signed request
+rm.getSignedRequest({
+    success: function({ signedRequest, platform }) {
+        console.log('signedRequest: ', signedRequest, ' platform: ', platform);
+    }
+});
 
-// Show toast message
+// show toast message
 rm.showToast({
     title: 'hello'
 })
 
-// Scan qrcode (only for terminal and merchant-app)
+// scan qrcode (only for terminal and merchant-app)
 rm.scanCode({
     success: function(resp) {
         console.log('success: ', resp.code)
