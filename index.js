@@ -112,7 +112,6 @@ function showAlert({ title = '', type = 'success' }) {
 async function onPrintReceipt({ data }) {
   if (isMobileApp) return;
   const messageStr = JSON.stringify(data);
-  console.log('messageStr', messageStr);
   await window.Native.printReceipt(messageStr);
 }
 
