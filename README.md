@@ -19,6 +19,9 @@ rm.getSignedRequest({
     }
 });
 
+// get platform
+const platform = rm.getPlatform();
+
 // show toast message
 rm.showToast({
     type: 'success', // success, error (only for web portal)
