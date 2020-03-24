@@ -18,7 +18,6 @@
     <script type="module">
         import rm from '../index.js';
         window.rm = rm;
-
         function demo() {
             var signedRequest = rm.getSignedRequest({
                 success: function({ signedRequest, platform }) {
@@ -35,6 +34,7 @@
         demo();
     </script>
     <script>
+        alert(JSON.stringify(window.rm));
         function onScanQRCode() {
             rm.scanCode(
                 {
