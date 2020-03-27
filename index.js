@@ -48,10 +48,14 @@ async function onPrepareSignedRequest({ success, fail }) {
       portalPostMessage = function (msg) {
         event.source.postMessage(JSON.stringify(msg), event.origin);
       };
-      portalPostMessage({
-        action: 'FINISH_HANDSHAKE',
-      })
-      success({ signedRequest: event.data, platform: platform })
+      
+      if (!event.data.startsWith("{") && !event.data.startsWith("setImmediate")) {
+        success({ signedRequest: event.data, platform: platform });
+        portalPostMessage({
+          action: 'FINISH_HANDSHAKE',
+        })
+        return;
+      }
     }, false);
   }
 
@@ -169,4 +173,22 @@ async function onPrintReceipt({ data }) {
   
 }
 
-export default { ...rm, PLATFORM_MOBILE_APP, PLATFORM_TERMINAL, PLATFORM_WEB_PORTAL };
+export default { 
+  getSignedRequest: onPrepareSignedRequest,
+  getPlatform: function getPlatform() {
+    return platform;
+  },
+  scanCode: onScanCode,
+  showToast: onShowToast,
+  showLoading: function showLoading() {
+    onToggleLoader(true);
+  },
+  hideLoading: function hideLoading() {
+    onToggleLoader(false);
+  },
+  showAlert: onShowAlert,
+  printReceipt: onPrintReceipt,
+  PLATFORM_MOBILE_APP, 
+  PLATFORM_TERMINAL, 
+  PLATFORM_WEB_PORTAL
+};
