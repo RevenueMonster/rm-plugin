@@ -57,6 +57,13 @@ async function onPrepareSignedRequest({ success, fail }) {
         return;
       }
     }, false);
+
+    window.onhashchange = function() { 
+      portalPostMessage({
+        action: 'URL_CHANGE',
+        message: window.location.href,
+      })
+    }
   }
 
   return signedRequest;
