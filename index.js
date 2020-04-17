@@ -8,15 +8,15 @@ var PLATFORM_WEB_PORTAL = 'WEB_PORTAL';
 // sdk code
 var rm = {
   getSignedRequest: onPrepareSignedRequest,
-  getPlatform: function() {
+  getPlatform: function () {
     return platform;
   },
   scanCode: onScanCode,
   showToast: onShowToast,
-  showLoading: function() {
+  showLoading: function () {
     onToggleLoader(true);
   },
-  hideLoading: function() {
+  hideLoading: function () {
     onToggleLoader(false);
   },
   showAlert: onShowAlert,
@@ -29,7 +29,7 @@ function sleep(ms) {
 }
 
 async function onPrepareSignedRequest({ success, fail }) {
-  
+
   var signedRequest = '';
 
   if ('revenuemonster' in window) {
@@ -48,22 +48,21 @@ async function onPrepareSignedRequest({ success, fail }) {
       portalPostMessage = function (msg) {
         event.source.postMessage(JSON.stringify(msg), event.origin);
       };
-      
+      if (typeof event.data !== 'string') return;
       if (!event.data.startsWith("{") && !event.data.startsWith("setImmediate")) {
         success({ signedRequest: event.data, platform: platform });
         portalPostMessage({
           action: 'FINISH_HANDSHAKE',
         })
+        window.onhashchange = function () {
+          portalPostMessage({
+            action: 'URL_CHANGE',
+            message: window.location.href,
+          })
+        }
         return;
       }
     }, false);
-
-    window.onhashchange = function() { 
-      portalPostMessage({
-        action: 'URL_CHANGE',
-        message: window.location.href,
-      })
-    }
   }
 
   return signedRequest;
@@ -78,11 +77,11 @@ function onScanCode({ success, fail, complete }) {
           type: 'scanner',
         })
       );
-  
+
       var elem = window.revenuemonster.os === 'android' ? document : window;
       elem.addEventListener(
         'message',
-        function(event) {
+        function (event) {
           var msg = JSON.parse(event.data);
           if (msg.action === 'SCANNER') {
             success({ code: msg.result });
@@ -114,7 +113,7 @@ function onToggleLoader(isLoading) {
         })
       );
       break;
-    
+
     case PLATFORM_TERMINAL:
       window.Native.toggleLoader(isLoading);
       break;
@@ -136,9 +135,9 @@ function onShowToast({ title, type }) {
           action: 'SHOW_TOAST',
           message: title,
         })
-      );      
+      );
       break;
-    
+
     case PLATFORM_TERMINAL:
       window.Native.showToast(message);
       break;
@@ -163,7 +162,7 @@ function onShowAlert({ title = '', type = 'success' }) {
         })
       );
       break;
-    
+
     case PLATFORM_TERMINAL:
       window.Native.showMessageDialog(title);
       break;
@@ -177,10 +176,10 @@ async function onPrintReceipt({ data }) {
       await window.Native.printReceipt(messageStr);
       break;
   }
-  
+
 }
 
-export default { 
+export default {
   getSignedRequest: onPrepareSignedRequest,
   getPlatform: function getPlatform() {
     return platform;
@@ -195,7 +194,7 @@ export default {
   },
   showAlert: onShowAlert,
   printReceipt: onPrintReceipt,
-  PLATFORM_MOBILE_APP, 
-  PLATFORM_TERMINAL, 
+  PLATFORM_MOBILE_APP,
+  PLATFORM_TERMINAL,
   PLATFORM_WEB_PORTAL
 };
