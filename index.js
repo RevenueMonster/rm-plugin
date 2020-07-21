@@ -21,6 +21,8 @@ var rm = {
   },
   showAlert: onShowAlert,
   printReceipt: onPrintReceipt,
+  getEventData:onGetEventData,
+  setBarTitle:onSetBarTitle
 };
 
 // util for sleep
@@ -179,6 +181,35 @@ async function onPrintReceipt({ data }) {
 
 }
 
+function onGetEventData({ success, fail }) {
+  await sleep(100);
+  var eventData;
+  switch (platform) {
+    case PLATFORM_MOBILE_APP:
+      eventData = window.revenuemonster.getEventData();
+      success({ eventData })
+      break;
+
+    case PLATFORM_TERMINAL:
+      eventData = window.Native.getEventData();
+      success({ eventData });
+      break;
+  }
+}
+
+
+function onSetBarTitle({ title }) {
+  switch (platform) {
+    case PLATFORM_MOBILE_APP:
+      window.revenuemonster.setBarTitle(title);
+      break;
+
+    case PLATFORM_TERMINAL:
+      window.Native.setBarTitle(title);
+      break;
+  }
+}
+
 export default {
   getSignedRequest: onPrepareSignedRequest,
   getPlatform: function getPlatform() {
@@ -194,6 +225,8 @@ export default {
   },
   showAlert: onShowAlert,
   printReceipt: onPrintReceipt,
+  getEventData:onGetEventData,
+  setBarTitle:onSetBarTitle,
   PLATFORM_MOBILE_APP,
   PLATFORM_TERMINAL,
   PLATFORM_WEB_PORTAL
