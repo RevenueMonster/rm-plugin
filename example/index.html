@@ -14,6 +14,7 @@
         <button onclick="onLoading()">Toggle Loading</button></br></br>
         <button onclick="onShowAlert('hi success')">Show Success Alert (Terminal or Mobile App)</button></br></br>
         <button onclick="onShowAlert('hi error', 'error')">Show Error Alert (Terminal or Mobile App)</button></br></br>
+        <button onclick="onSetBarTitle('hi')">Set Hi Title For Navbar (Terminal or Mobile App)</button></br></br>
         <a href="#here">Test URL Changes</a>
         <div id="here"></div>
     </div>
@@ -77,6 +78,12 @@
                     title: title
                 }
             )
+        }
+
+        function onSetBarTitle(title) {
+            rm.setBarTitle({
+                title: title,
+            });
         }
     </script>
 </body>

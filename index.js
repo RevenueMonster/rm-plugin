@@ -201,7 +201,12 @@ async function onGetEventData({ success, fail }) {
 function onSetBarTitle({ title }) {
   switch (platform) {
     case PLATFORM_MOBILE_APP:
-      window.revenuemonster.setBarTitle(title);
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({
+          action: 'NAVBAR_TITLE',
+          message: title,
+        })
+      );
       break;
 
     case PLATFORM_TERMINAL:
@@ -225,8 +230,8 @@ export default {
   },
   showAlert: onShowAlert,
   printReceipt: onPrintReceipt,
-  getEventData:onGetEventData,
-  setBarTitle:onSetBarTitle,
+  getEventData: onGetEventData,
+  setBarTitle: onSetBarTitle,
   PLATFORM_MOBILE_APP,
   PLATFORM_TERMINAL,
   PLATFORM_WEB_PORTAL

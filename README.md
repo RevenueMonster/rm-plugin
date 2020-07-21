@@ -57,4 +57,10 @@ rm.showAlert({
 rm.printReceipt({
     data: {} // object
 })
+
+// show navbar title (only for terminal and merchant-app)
+rm.setBarTitle({
+    title: 'hello world'
+})
+
 ```
