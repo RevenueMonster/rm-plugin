@@ -21,8 +21,8 @@ var rm = {
   },
   showAlert: onShowAlert,
   printReceipt: onPrintReceipt,
-  getEventData:onGetEventData,
-  setBarTitle:onSetBarTitle
+  getEventData: onGetEventData,
+  setBarTitle: onSetBarTitle
 };
 
 // util for sleep
@@ -181,7 +181,7 @@ async function onPrintReceipt({ data }) {
 
 }
 
-function onGetEventData({ success, fail }) {
+async function onGetEventData({ success, fail }) {
   await sleep(100);
   var eventData;
   switch (platform) {
