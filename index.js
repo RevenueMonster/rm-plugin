@@ -187,12 +187,12 @@ async function onGetEventData({ success, fail }) {
   switch (platform) {
     case PLATFORM_MOBILE_APP:
       eventData = window.revenuemonster.getEventData();
-      success({ eventData })
+      success(eventData)
       break;
 
     case PLATFORM_TERMINAL:
       eventData = window.Native.getEventData();
-      success({ eventData });
+      success(eventData);
       break;
   }
 }
