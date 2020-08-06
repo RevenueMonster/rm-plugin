@@ -1,15 +1,19 @@
 var portalPostMessage;
-var platform = '';
+var platform = "";
+var terminalType = "";
 
-var PLATFORM_MOBILE_APP = 'MOBILE_APP';
-var PLATFORM_TERMINAL = 'TERMINAL';
-var PLATFORM_WEB_PORTAL = 'WEB_PORTAL';
+var PLATFORM_MOBILE_APP = "MOBILE_APP";
+var PLATFORM_TERMINAL = "TERMINAL";
+var PLATFORM_WEB_PORTAL = "WEB_PORTAL";
 
 // sdk code
 var rm = {
   getSignedRequest: onPrepareSignedRequest,
   getPlatform: function () {
     return platform;
+  },
+  getTerminalType: function getTerminalType() {
+    return terminalType;
   },
   scanCode: onScanCode,
   showToast: onShowToast,
@@ -22,49 +26,56 @@ var rm = {
   showAlert: onShowAlert,
   printReceipt: onPrintReceipt,
   getEventData: onGetEventData,
-  setBarTitle: onSetBarTitle
+  setBarTitle: onSetBarTitle,
 };
 
 // util for sleep
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function onPrepareSignedRequest({ success, fail }) {
+  var signedRequest = "";
 
-  var signedRequest = '';
-
-  if ('revenuemonster' in window) {
+  if ("revenuemonster" in window) {
     await sleep(100);
     platform = window.revenuemonster.platform;
     signedRequest = window.revenuemonster.getSignedRequest();
-    success({ signedRequest, platform: platform })
-  } else if ('signedRequest' in window) {
+    success({ signedRequest, platform: platform });
+  } else if ("signedRequest" in window) {
     await sleep(100);
     platform = PLATFORM_TERMINAL;
+    terminalType = window.Native.getTerminalType();
     signedRequest = window.signedRequest.getSignedRequest();
-    success({ signedRequest, platform: platform })
+    success({ signedRequest, platform: platform });
   } else {
     platform = PLATFORM_WEB_PORTAL;
-    window.addEventListener('message', function (event) {
-      portalPostMessage = function (msg) {
-        event.source.postMessage(JSON.stringify(msg), event.origin);
-      };
-      if (typeof event.data !== 'string') return;
-      if (!event.data.startsWith("{") && !event.data.startsWith("setImmediate")) {
-        success({ signedRequest: event.data, platform: platform });
-        portalPostMessage({
-          action: 'FINISH_HANDSHAKE',
-        })
-        window.onhashchange = function () {
+    window.addEventListener(
+      "message",
+      function (event) {
+        portalPostMessage = function (msg) {
+          event.source.postMessage(JSON.stringify(msg), event.origin);
+        };
+        if (typeof event.data !== "string") return;
+        if (
+          !event.data.startsWith("{") &&
+          !event.data.startsWith("setImmediate")
+        ) {
+          success({ signedRequest: event.data, platform: platform });
           portalPostMessage({
-            action: 'URL_CHANGE',
-            message: window.location.href,
-          })
+            action: "FINISH_HANDSHAKE",
+          });
+          window.onhashchange = function () {
+            portalPostMessage({
+              action: "URL_CHANGE",
+              message: window.location.href,
+            });
+          };
+          return;
         }
-        return;
-      }
-    }, false);
+      },
+      false
+    );
   }
 
   return signedRequest;
@@ -75,17 +86,17 @@ function onScanCode({ success, fail, complete }) {
     case PLATFORM_MOBILE_APP:
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
-          action: 'SCANNER',
-          type: 'scanner',
+          action: "SCANNER",
+          type: "scanner",
         })
       );
 
-      var elem = window.revenuemonster.os === 'android' ? document : window;
+      var elem = window.revenuemonster.os === "android" ? document : window;
       elem.addEventListener(
-        'message',
+        "message",
         function (event) {
           var msg = JSON.parse(event.data);
-          if (msg.action === 'SCANNER') {
+          if (msg.action === "SCANNER") {
             success({ code: msg.result });
           }
         },
@@ -103,14 +114,14 @@ function onScanCode({ success, fail, complete }) {
 function onToggleLoader(isLoading) {
   switch (platform) {
     case PLATFORM_MOBILE_APP:
-      var funcName = 'hide';
+      var funcName = "hide";
       if (isLoading) {
-        funcName = 'show';
+        funcName = "show";
       }
 
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
-          action: 'TOGGLE_LOADER',
+          action: "TOGGLE_LOADER",
           type: funcName,
         })
       );
@@ -122,9 +133,9 @@ function onToggleLoader(isLoading) {
 
     case PLATFORM_WEB_PORTAL:
       portalPostMessage({
-        action: 'TOGGLE_LOADER',
-        type: isLoading ? 'show' : 'hide',
-      })
+        action: "TOGGLE_LOADER",
+        type: isLoading ? "show" : "hide",
+      });
       break;
   }
 }
@@ -134,7 +145,7 @@ function onShowToast({ title, type }) {
     case PLATFORM_MOBILE_APP:
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
-          action: 'SHOW_TOAST',
+          action: "SHOW_TOAST",
           message: title,
         })
       );
@@ -146,19 +157,19 @@ function onShowToast({ title, type }) {
 
     case PLATFORM_WEB_PORTAL:
       portalPostMessage({
-        action: 'SHOW_NOTIFICATION',
+        action: "SHOW_NOTIFICATION",
         type,
         message: title,
-      })
+      });
   }
 }
 
-function onShowAlert({ title = '', type = 'success' }) {
+function onShowAlert({ title = "", type = "success" }) {
   switch (platform) {
     case PLATFORM_MOBILE_APP:
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
-          action: 'MODAL_MESSAGE',
+          action: "MODAL_MESSAGE",
           type,
           message: title,
         })
@@ -178,7 +189,6 @@ async function onPrintReceipt({ data }) {
       await window.Native.printReceipt(messageStr);
       break;
   }
-
 }
 
 async function onGetEventData({ success, fail }) {
@@ -187,7 +197,7 @@ async function onGetEventData({ success, fail }) {
   switch (platform) {
     case PLATFORM_MOBILE_APP:
       eventData = window.revenuemonster.getEventData();
-      success(eventData)
+      success(eventData);
       break;
 
     case PLATFORM_TERMINAL:
@@ -197,13 +207,12 @@ async function onGetEventData({ success, fail }) {
   }
 }
 
-
 function onSetBarTitle({ title }) {
   switch (platform) {
     case PLATFORM_MOBILE_APP:
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
-          action: 'NAVBAR_TITLE',
+          action: "NAVBAR_TITLE",
           message: title,
         })
       );
@@ -220,6 +229,9 @@ export default {
   getPlatform: function getPlatform() {
     return platform;
   },
+  getTerminalType: function getTerminalType() {
+    return terminalType;
+  },
   scanCode: onScanCode,
   showToast: onShowToast,
   showLoading: function showLoading() {
@@ -234,5 +246,5 @@ export default {
   setBarTitle: onSetBarTitle,
   PLATFORM_MOBILE_APP,
   PLATFORM_TERMINAL,
-  PLATFORM_WEB_PORTAL
+  PLATFORM_WEB_PORTAL,
 };
