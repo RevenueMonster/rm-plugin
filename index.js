@@ -22,7 +22,9 @@ var rm = {
   showAlert: onShowAlert,
   printReceipt: onPrintReceipt,
   getEventData: onGetEventData,
-  setBarTitle: onSetBarTitle
+  setBarTitle: onSetBarTitle,
+  setCookie: onSetCookie,
+  getCookie: onGetCookie
 };
 
 // util for sleep
@@ -215,6 +217,42 @@ function onSetBarTitle({ title }) {
   }
 }
 
+function onSetCookie({ key, value }) {
+  switch (platform) {
+    case PLATFORM_WEB_PORTAL:
+      portalPostMessage({
+        action: 'SET_COOKIE',
+        type: key,
+        message: value,
+      })
+      break;
+  }
+}
+
+function onGetCookie({ key, success, fail }) {
+  switch (platform) {
+    case PLATFORM_WEB_PORTAL:
+      portalPostMessage({
+        action: 'GET_COOKIE',
+        type: key,
+      })
+
+      window.addEventListener('message', function (event) {
+        if (typeof event.data !== 'string') return;
+        if (event.data.startsWith("{") && !event.data.startsWith("setImmediate")) {
+          const x = JSON.parse(event.data);
+          switch (x.action) {
+            case "GET_COOKIE":
+              success({ data: x.data });
+              break;
+          }
+          return;
+        }
+      }, false);
+      break;
+  }
+}
+
 export default {
   getSignedRequest: onPrepareSignedRequest,
   getPlatform: function getPlatform() {
@@ -232,6 +270,8 @@ export default {
   printReceipt: onPrintReceipt,
   getEventData: onGetEventData,
   setBarTitle: onSetBarTitle,
+  setCookie: onSetCookie,
+  getCookie: onGetCookie,
   PLATFORM_MOBILE_APP,
   PLATFORM_TERMINAL,
   PLATFORM_WEB_PORTAL
