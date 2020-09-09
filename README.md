@@ -63,4 +63,18 @@ rm.setBarTitle({
     title: 'hello world'
 })
 
+// set storage by key and value
+rm.setStorage({
+    key: 'test',
+    value: 'token',
+})
+
+// get storage by key name
+rm.getStorage({
+    key: 'test',
+    success: function({ data }) {
+        console.log("content", data);
+    }
+})
+
 ```

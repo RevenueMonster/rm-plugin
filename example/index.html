@@ -15,8 +15,8 @@
         <button onclick="onShowAlert('hi success')">Show Success Alert (Terminal or Mobile App)</button></br></br>
         <button onclick="onShowAlert('hi error', 'error')">Show Error Alert (Terminal or Mobile App)</button></br></br>
         <button onclick="onSetBarTitle('hi')">Set Hi Title For Navbar (Terminal or Mobile App)</button></br></br>
-        <button onclick="onSetCookie('yussuf', 'hello')">Set Hi Cookie (Portal)</button></br></br>
-        <button onclick="onGetCookie('yussuf')">Get Cookie</button><span id="cookie"></span></br></br>
+        <button onclick="onSet('yussuf', 'hello')">Set Hi Storage (Portal)</button></br></br>
+        <button onclick="onGetStorage('yussuf')">Get Storage (Portal)</button><span id="storage"></span></br></br>
         <a href="#here">Test URL Changes</a>
         <div id="here"></div>
     </div>
@@ -88,8 +88,8 @@
             });
         }
 
-        function onSetCookie(key, value) {
-            rm.setCookie(
+        function onSetStorage(key, value) {
+            rm.setStorage(
                 {
                     key: key,
                     value: value,
@@ -97,11 +97,11 @@
             )
         }
 
-        function onGetCookie(key) {
-            rm.getCookie({
+        function onGetStorage(key) {
+            rm.getStorage({
                 key: key,
                 success: function({ data }) {
-                    document.getElementById("cookie").innerHTML = " Cookie Content: " + data;
+                    document.getElementById("storage").innerHTML = " Content: " + data;
                 }
             })
         }

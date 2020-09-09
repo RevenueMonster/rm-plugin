@@ -23,8 +23,8 @@ var rm = {
   printReceipt: onPrintReceipt,
   getEventData: onGetEventData,
   setBarTitle: onSetBarTitle,
-  setCookie: onSetCookie,
-  getCookie: onGetCookie
+  setStorage: onSetStorage,
+  getStorage: onGetStorage
 };
 
 // util for sleep
@@ -217,7 +217,7 @@ function onSetBarTitle({ title }) {
   }
 }
 
-function onSetCookie({ key, value }) {
+function onSetStorage({ key, value }) {
   switch (platform) {
     case PLATFORM_WEB_PORTAL:
       portalPostMessage({
@@ -229,7 +229,7 @@ function onSetCookie({ key, value }) {
   }
 }
 
-function onGetCookie({ key, success, fail }) {
+function onGetStorage({ key, success, fail }) {
   switch (platform) {
     case PLATFORM_WEB_PORTAL:
       portalPostMessage({
@@ -270,8 +270,8 @@ export default {
   printReceipt: onPrintReceipt,
   getEventData: onGetEventData,
   setBarTitle: onSetBarTitle,
-  setCookie: onSetCookie,
-  getCookie: onGetCookie,
+  setStorage: onSetStorage,
+  getStorage: onGetStorage,
   PLATFORM_MOBILE_APP,
   PLATFORM_TERMINAL,
   PLATFORM_WEB_PORTAL
