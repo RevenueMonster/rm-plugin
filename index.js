@@ -243,7 +243,9 @@ function onGetStorage({ key, success, fail }) {
           const x = JSON.parse(event.data);
           switch (x.action) {
             case "GET_COOKIE":
-              success({ data: x.data });
+              if (key === x.type) {
+                success({ data: x.data });
+              }
               break;
           }
           return;
