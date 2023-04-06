@@ -1,17 +1,21 @@
 {
-    "name": "rm-plugin",
-    "version": "0.0.14",
-    "type": "module",
-    "description": "",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/RevenueMonster/rm-plugin.git"
-    },
-    "main": "index.min.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": ["react-native", "revenuemonster", "sdk"],
-    "author": "Mohamed Yussuf",
-    "license": "MIT"
-  }
+  "name": "rm-plugin",
+  "version": "0.0.15",
+  "type": "module",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RevenueMonster/rm-plugin.git"
+  },
+  "main": "index.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native",
+    "revenuemonster",
+    "sdk"
+  ],
+  "author": "Mohamed Yussuf",
+  "license": "MIT"
+}
